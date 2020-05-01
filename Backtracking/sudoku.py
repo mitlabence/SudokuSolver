@@ -1,7 +1,5 @@
 import numpy as np
 
-#TODO: implement mask to protect entries from overwrite. Need to modify function isValid()!
-
 class Puzzle:
     """The Puzzle class describes a Sudoku board.
 
@@ -14,24 +12,35 @@ class Puzzle:
     def __init__(self, initial_board = np.zeros((9, 9))): #takes 9x9 matrix filled with integers 0-9: 1-9 for actual values, 0 for empty cell.
         self.board = np.copy(initial_board)
         self.segment_map = {0: (0, 3), 1: (3, 6), 2: (6, 9)} #mapping from segment description to index range
-    def getSegment(self, horizontal_segment: int=0, vertical_segment: int=0):#horizontal: 0 is left, 1 is middle, 2 is right; vertical: 0 is top, 1 is middle, 2 is bottom
+    def getSegment(self, vertical_segment: int=0, horizontal_segment: int=0):#horizontal: 0 is left, 1 is middle, 2 is right; vertical: 0 is top, 1 is middle, 2 is bottom
         try:
             begin_x, end_x = self.segment_map[horizontal_segment]
             begin_y, end_y = self.segment_map[vertical_segment]
         except KeyError:
             print(f"Failed to fetch segment w/ vertical index {vertical_segment}, horizontal index {horizontal_segment}.")
-        return self.board[begin_x:end_x, begin_y:end_y] #return 2D array
-    def getSegmentFlattened(self, horizontal: int=0, vertical: int=0):
-        return self.getSegment(horizontal, vertical).flatten()
-    def getRow(self, row: int=0):
-        return np.copy(self.board[row])
+        for y in range(begin_y, end_y):
+            for x in range(begin_x, end_x):
+                yield self.board[y][x] #return elements of 3x3 segment, row by row
+    def nextEmptyInRow(self, row: int, col: int):
+        """Find next empty position in row starting with (inclusive) (row, col) location. Return index if found one, return 9 if none found.
+        """
+        x = col
+        while (x < 9) and (self.board[row][x] != 0):
+            x = x + 1
+        return x
+
+    def getRow(self, row: int=0): #generator for one row, i.e. self.board[row, :]
+        for i in range(9):
+            yield self.board[row][i]
     def getColumn(self, col: int=0):
-        return np.copy(self.board[:, col])
-    def whichSegment(row, col):
+        for i in range(9):
+            yield self.board[i][col]
+        #return np.copy(self.board[:, col])
+    def whichSegment(self, row: int, col: int):
         horizontal_segment = (col - col%3)//3   #falls between 0 and 2 (inclusive). 0 is left, 1 is middle, 2 is right.
         vertical_segment = (row - row%3)//3     #0 is top, 1 is middle, 2 is bottom
         return (vertical_segment, horizontal_segment)
-    def isProtected(row: int, col: int) -> bool: #TODO: implement feature using a constant self.mask
+    def isProtected(self, row: int, col: int) -> bool: #TODO: implement feature using a constant self.mask
         """Checks if cell is overwrite-protected. Returns True if yes, returns False if cell can be overwritten.
         """
         return False
@@ -43,13 +52,13 @@ class Puzzle:
                 return False #element already in same row
             elif entry in self.getColumn(col):
                 return False #element already in same column
-            elif entry in self.getSegment(self.whichSegment(row, col)):
+            elif entry in self.getSegment(*self.whichSegment(row, col)):
                 return False #element already in same segment
         return True
     def writeCell(self, entry: int, row: int, col: int):
         """Overwrite element in cell with index (row, col) if not overwrite-protected.
         """
-        if not isProtected(row, col):
+        if not self.isProtected(row, col):
             self.board[row][col] = entry
     def cellAt(self, row: int, col: int):
         """
@@ -71,20 +80,58 @@ class Puzzle:
                 segment = self.getSegment(i, j)
                 for row in segment:
                     print(" ".join(map(str, row)))
-
-def solvePuzzle(board: Puzzle):
-    row = 0
-    col = 0
-    while(board.cellAt(row, col) != 0):
-        row = row + 1 #find first empty cell 
+#TODO: Think about logic here again
+def fillCell(board: Puzzle, row: int, col: int):
+    """fills single cell correctly; keeps iterating until meets irresolvable situation in row, or end of row. Should be only called on empty cell!
+    """
+    if col == 9:
+        return True #row has been filled successfully
+    if board.board[row][col] != 0: #guard against non-empty cell being written to. TODO: remove once protection is built into Puzzle class
+        print("Error! Non-empty cell written to!")
+    for guess in range(1, 10):
+        if board.isValid(guess, row, col):
+            board.writeCell(guess, row, col)
+            if fillCell(board, row, board.nextEmptyInRow(row, col+1)) == True:
+                return True
+    board.writeCell(0, row, col) #set back to empty
+    return False
+    
+def fillRow(board: Puzzle, row: int):
+    """Attempts to fill row, and continues iteratively until reaches irresolvable situation, or the last row is successfully filled.
+    """
+    if row == 9: #reached bottom of Sudoku, with all rows filled successfully
+        return True
+    if fillCell(board, row, board.nextEmptyInRow(row, 0)): #succeeded in filling all cells in a row, proceed to next one
+        if fillRow(board, row + 1):
+            return True
+    return False       
         
-example_board = [[0, 3, 0, 0, 0, 0, 0, 0, 0],
-                 [0, 2, 0, 9, 0, 6, 3, 0, 0],
-                 [0, 6, 0, 4, 0, 2, 0, 9, 0],
-                 [1, 0, 0, 0, 9, 0, 4, 0, 0],
-                 [0, 0, 8, 1, 0, 3, 5, 0, 0],
-                 [0, 5, 0, 3, 0, 1, 0, 6, 0],
-                 [0, 0, 4, 6, 0, 7, 0, 3, 0],
-                 [0, 0, 0, 0, 0, 0, 0, 8, 0]
+example_board = [[0, 0, 0, 2, 6, 0, 7, 0, 1],
+                 [6, 8, 0, 0, 7, 0, 0, 9, 0],
+                 [1, 9, 0, 0, 0, 4, 5, 0, 0],
+                 [8, 2, 0, 1, 0, 0, 0, 4, 0],
+                 [0, 0, 4, 6, 0, 2, 9, 0, 0],
+                 [0, 5, 0, 0, 0, 3, 0, 2, 8],
+                 [0, 0, 9, 3, 0, 0, 0, 7, 4],
+                 [0, 4, 0, 0, 5, 0, 0, 3, 6],
+                 [7, 0, 3, 0, 1, 8, 0, 0, 0]
 ]
+example_solution = [[4, 3, 5, 2, 6, 9, 7, 8, 1],
+                    [6, 8, 2, 5, 7, 1, 4, 9, 3],
+                    [1, 9, 7, 8, 3, 4, 5, 6, 2],
+                    [8, 2, 6, 1, 9, 5, 3, 4, 7],
+                    [3, 7, 4, 6, 8, 2, 9, 1, 5],
+                    [9, 5, 1, 7, 4, 3, 6, 2, 8],
+                    [5, 1, 9, 3, 2, 6, 8, 7, 4],
+                    [2, 4, 8, 9, 5, 7, 1, 3, 6],
+                    [7, 6, 3, 4, 1, 8, 2, 5, 9]
+]
+"""
+Call fillRow(p, 0) to start solving the Sudoku-puzzle p.
+"""
+from time import time
+t0 = time()
 p = Puzzle(example_board)
+fillRow(p,0)
+t = time()
+print(p.board)
