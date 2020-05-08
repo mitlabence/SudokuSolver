@@ -68,6 +68,11 @@ class Puzzle:
             return self.board[row][col]
         except IndexError:
             print(f"Out of bounds while accessing cellAt({row}, {col})!")
+    def drawBoard(self):
+        """Draws board in human-friendly form.
+        """
+        for row in self.board:
+            print("\n" + " ".join(row))
     #Test functions
     def _TESTsegment(self) -> None:
         print("This should be the whole board:")
