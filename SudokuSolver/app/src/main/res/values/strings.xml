@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SudokuSolver</string>
+    <string name="show_grid">Show grid</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_text">Sudoku Solver</string>
+
+    <string name="colorPrimary">#26596A</string>
+    <string name="colorSecondary">#303C74</string>
+    <string name="colorTertiary">#AA8939</string>
+    <string name="colorComplementary">#AA7339</string>
+
+    <string name="colorPrimaryLightest">#6C939F</string>
+    <string name="colorSecondaryLightest">#7B84AE</string>
+    <string name="colorTertiaryLightest">#FFE6AA</string>
+    <string name="colorComplementaryLightest">#FFD6AA</string>
+
+    <string name="colorPrimaryLight">#457585</string>
+    <string name="colorSecondaryLight">#515D91</string>
+    <string name="colorTertiaryLight">#D4B56A</string>
+    <string name="colorComplementaryLight">#D4A16A</string>
+
+    <string name="colorPrimaryDark">#104050</string>
+    <string name="colorSecondaryDark">#172357</string>
+    <string name="colorTertiaryDark">#806015</string>
+    <string name="colorComplementaryDark">#804C15</string>
+
+    <string name="colorPrimaryDarkest">#022835</string>
+    <string name="colorSecondaryDarkest">#07103A</string>
+    <string name="colorTertiaryDarkest">#553C00</string>
+    <string name="colorComplementaryDarkest">#552C00</string>
+</resources>

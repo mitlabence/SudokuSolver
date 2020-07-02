@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#26596A</color>
+    <color name="colorSecondary">#303C74</color>
+    <color name="colorTertiary">#AA8939</color>
+    <color name="colorComplementary">#AA7339</color>
+
+    <color name="colorPrimaryLightest">#6C939F</color>
+    <color name="colorSecondaryLightest">#7B84AE</color>
+    <color name="colorTertiaryLightest">#FFE6AA</color>
+    <color name="colorComplementaryLightest">#FFD6AA</color>
+
+    <color name="colorPrimaryLight">#457585</color>
+    <color name="colorSecondaryLight">#515D91</color>
+    <color name="colorTertiaryLight">#D4B56A</color>
+    <color name="colorComplementaryLight">#D4A16A</color>
+
+    <color name="colorPrimaryDark">#104050</color>
+    <color name="colorSecondaryDark">#172357</color>
+    <color name="colorTertiaryDark">#806015</color>
+    <color name="colorComplementaryDark">#804C15</color>
+
+    <color name="colorPrimaryDarkest">#022835</color>
+    <color name="colorSecondaryDarkest">#07103A</color>
+    <color name="colorTertiaryDarkest">#553C00</color>
+    <color name="colorComplementaryDarkest">#552C00</color>
+</resources>

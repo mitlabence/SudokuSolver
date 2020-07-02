@@ -2,6 +2,18 @@ package com.example.sudokusolver
 
 //TODO rename local variables with camelCase
 
+/*
+TODO switch to Array<String>!
+Indices:
+0  1  2  3 ...  8
+9  10 11 12 ... 17
+...
+
+1d indices:0 - 80.
+Get column: return 1d index mod 9.
+Get row: return (1d index - {1d index mod 9}).
+Get segment: get row and column first, then calculate from those values (0 to 2, 3 to 5, 6 to 8).
+ */
 
 class SudokuGrid(initial_values: Array<IntArray>){
     /*
@@ -124,8 +136,24 @@ solution:
  */
 
 
-class Solver(grid: SudokuGrid) {
-    val initial_grid: SudokuGrid = grid
-
+class Solution(initialGrid: SudokuGrid) {
+    private val _grid: SudokuGrid = initialGrid
+    fun fillCell(row: Int, column: Int): Boolean{
+        /*
+        fills single cell correctly; keeps iterating until meets irresolvable situation in row, or end of row. Should be only called on empty cell!
+        */
+        if(column==9) return true
+        if (_grid.cellAt(row, column) != 0){
+            println("Error! Non-empty cell written to!")
+        }
+        for(guess in 1..9){
+            if(_grid.isValid(row, column, guess)){
+                _grid.writeCell(row, column, guess)
+                if(fillCell(row, _grid.nextEmptyInRow(row, column+1))) return true
+            }
+        }
+        _grid.writeCell(row, column, 0) //set back to empty
+        return false
+    }
 
 }

@@ -85,7 +85,6 @@ class Puzzle:
                 segment = self.getSegment(i, j)
                 for row in segment:
                     print(" ".join(map(str, row)))
-#TODO: Think about logic here again
 def fillCell(board: Puzzle, row: int, col: int):
     """fills single cell correctly; keeps iterating until meets irresolvable situation in row, or end of row. Should be only called on empty cell!
     """
@@ -100,7 +99,7 @@ def fillCell(board: Puzzle, row: int, col: int):
                 return True
     board.writeCell(0, row, col) #set back to empty
     return False
-    
+
 def fillRow(board: Puzzle, row: int):
     """Attempts to fill row, and continues iteratively until reaches irresolvable situation, or the last row is successfully filled.
     """
@@ -109,8 +108,8 @@ def fillRow(board: Puzzle, row: int):
     if fillCell(board, row, board.nextEmptyInRow(row, 0)): #succeeded in filling all cells in a row, proceed to next one
         if fillRow(board, row + 1):
             return True
-    return False       
-        
+    return False
+
 example_board = [[0, 0, 0, 2, 6, 0, 7, 0, 1],
                  [6, 8, 0, 0, 7, 0, 0, 9, 0],
                  [1, 9, 0, 0, 0, 4, 5, 0, 0],
