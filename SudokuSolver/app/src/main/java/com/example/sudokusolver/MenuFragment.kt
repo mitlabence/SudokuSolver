@@ -21,6 +21,9 @@ class MenuFragment : Fragment() {
         binding.gridButton.setOnClickListener {view: View ->
             Navigation.findNavController(view).navigate(R.id.action_menuFragment_to_gridFragment)
         }
+        binding.cameraButton.setOnClickListener {view: View ->
+            Navigation.findNavController(view).navigate(R.id.action_menuFragment_to_cameraFragment)
+        }
         return binding.root
     }
 

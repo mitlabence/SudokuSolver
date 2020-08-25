@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sudokusolver">
 
+    <!-- Declare features -->
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- Declare permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,6 +23,9 @@
         </activity>
         <activity android:name=".grid.GridActivity">
         </activity>
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr" />
     </application>
 
 </manifest>

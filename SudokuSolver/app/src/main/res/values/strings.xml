@@ -28,4 +28,6 @@
     <string name="colorSecondaryDarkest">#07103A</string>
     <string name="colorTertiaryDarkest">#553C00</string>
     <string name="colorComplementaryDarkest">#552C00</string>
+    <string name="capture_button_alt">Capture</string>
+    <string name="sudokuSolveIt">Solve Grid</string>
 </resources>

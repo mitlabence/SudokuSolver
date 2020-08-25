@@ -11,9 +11,16 @@
         <action
             android:id="@+id/action_menuFragment_to_gridFragment"
             app:destination="@id/gridFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
     </fragment>
     <fragment
         android:id="@+id/gridFragment"
         android:name="com.example.sudokusolver.grid.GridFragment"
         android:label="GridFragment" />
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.sudokusolver.camera.CameraFragment"
+        android:label="CameraFragment" />
 </navigation>
