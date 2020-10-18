@@ -77,6 +77,7 @@ class GridFragment : Fragment(), SudokuGridView.OnTouchListener {
         }
         notesButton.setOnClickListener { viewModel.sudokuGrid.changeNoteTakingState() }
         deleteButton.setOnClickListener { viewModel.sudokuGrid.delete() }
+        solveButton.setOnClickListener {viewModel.sudokuGrid.solveGrid()}
 
     }
 

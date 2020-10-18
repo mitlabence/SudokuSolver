@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -30,6 +31,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.Navigation
 import com.example.sudokusolver.R
+import kotlinx.android.synthetic.main.camera_ui_container.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -52,6 +54,9 @@ class CameraFragment : Fragment() {
     private lateinit var viewFinder: PreviewView
     private lateinit var broadcastManager: LocalBroadcastManager
     private lateinit var cameraExecutor: ExecutorService
+
+    //image analyzer
+    private lateinit var gridScannerAnalyzer: GridScannerAnalyzer
 
     private var displayId: Int = -1
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
@@ -100,6 +105,9 @@ class CameraFragment : Fragment() {
         container = view as ConstraintLayout
         viewFinder = container.findViewById(R.id.view_finder)
 
+        //Initiate image analyzer
+        gridScannerAnalyzer = GridScannerAnalyzer()
+
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -117,6 +125,7 @@ class CameraFragment : Fragment() {
             // Set up the camera and its use cases
             setUpCamera()
         }
+        //
     }
     private fun setUpCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -234,7 +243,7 @@ class CameraFragment : Fragment() {
 
         // Inflate a new view containing all UI for controlling the camera
         val controls = View.inflate(requireContext(), R.layout.camera_ui_container, container)
-
+        controls.camera_capture_button.setOnClickListener { takePhoto() }
 //        // Listener for button used to capture photo
 //        controls.findViewById<ImageButton>(R.id.camera_capture_button).setOnClickListener {
 //
@@ -328,6 +337,22 @@ class CameraFragment : Fragment() {
 //        }
     }
 
+    private fun takePhoto() {
+        val imageCapture = imageCapture ?: return
+        imageCapture.takePicture(cameraExecutor, object: ImageCapture.OnImageCapturedCallback() {
+            override fun onCaptureSuccess(image: ImageProxy) {
+                val h = image.getHeight()
+                Log.d(TAG, "Captured image with height $h")
+                gridScannerAnalyzer.analyze(image)
+                image.close()
+            }
+
+            override fun onError(exception: ImageCaptureException) {
+                Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
+            }
+        })
+    }
+
     private fun aspectRatio(width: Int, height: Int): Int {
         val previewRatio = max(width, height).toDouble() / min(width, height)
         if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
@@ -335,6 +360,7 @@ class CameraFragment : Fragment() {
         }
         return AspectRatio.RATIO_16_9
     }
+
 
     companion object {
         private const val TAG = "CameraApp"

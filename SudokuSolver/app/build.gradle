@@ -67,10 +67,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //ML Kit OCR
     //implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.1'
 
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 }
 repositories {
     google()
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=androidx.camera.core.ExperimentalGetImage"]
 }
